@@ -1,8 +1,7 @@
 module Parser
   ( LTerm(..)
   , lambdaCalculusParser
-  )
-  where
+  ) where
 
 import Prelude hiding (when, between)
 
@@ -69,12 +68,18 @@ termParser = do
         variableParser
           <|> (defer \_ -> parenthesizedTermParser)
           <|> (defer \_ -> abstractionParser)
-
     )
-  -- if there is a next term then this is an application else just a term
-  optNext <- optionMaybe termParser
+  optNext <- optionMaybe ( defer \_ ->
+        variableParser
+          <|> (defer \_ -> parenthesizedTermParser)
+          <|> (defer \_ -> abstractionParser)
+    )
   case optNext of
-    Just t2 -> pure $ LApp t1 t2
+    Just t2 -> do
+      opt2Next <- optionMaybe termParser
+      case opt2Next of
+        Just t3 -> pure $ LApp (LApp t1 t2) t3
+        Nothing -> pure $ LApp t1 t2
     Nothing -> pure t1
 
 parenthesizedTermParser :: Parser (List Token) LTerm

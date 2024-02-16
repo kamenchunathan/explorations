@@ -12,9 +12,21 @@ import Tokenizer (tokenize)
 
 main :: Effect Unit
 main = do
-  let res = runParser (tokenize "xx") lambdaCalculusParser
   assertEqual
-    { actual: res
+    { actual: runParser (tokenize "xx") lambdaCalculusParser
     , expected: (Right (LApp (LVar $ codePointFromChar 'x') (LVar $ codePointFromChar 'x')))
+    }
+  assertEqual
+    { actual: runParser (tokenize "xyz") lambdaCalculusParser
+    , expected:
+        ( Right
+            ( LApp
+                ( LApp
+                    (LVar $ codePointFromChar 'x')
+                    (LVar $ codePointFromChar 'y')
+                )
+                (LVar $ codePointFromChar 'z')
+            )
+        )
     }
 
