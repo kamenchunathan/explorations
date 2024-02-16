@@ -1,0 +1,17 @@
+package:
+  name: lambda-calc-parser
+  dependencies:
+    - prelude
+    - console
+    - effect
+    - parsing
+    - strings
+  test:
+    main: Test.Main
+    dependencies:
+      - assert
+      - quickcheck
+workspace:
+  package_set:
+    registry: 50.1.0
+  extra_packages: {}
